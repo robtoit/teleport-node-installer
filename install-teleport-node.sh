@@ -83,8 +83,7 @@ function systemd_start() {
   echo "Starting systemd teleport.service"
   sudo systemctl daemon-reload
   sudo systemctl enable teleport
-  sudo systemctl stop teleport
-  sudo systemctl start teleport
+  sudo systemctl restart teleport
 }
 
 function get_teleport_status() {
