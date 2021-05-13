@@ -1,5 +1,6 @@
 #!/bin/bash
 TELEPORT_PACKAGE=teleport-v6.0.3-linux-arm-bin.tar.gz
+AUTH_SERVER=teleport.mv.corplite.com
 
 function check_root_user() {
   if [ "$EUID" -ne 0 ]; then
@@ -11,7 +12,7 @@ function check_root_user() {
 function clean_teleport() {
   echo "Removing existing teleport install"
   rm -rf /var/lib/teleport
-  rm /usr/bin/teleport
+  rm /usr/local/bin/teleport
   rm /etc/teleport.yaml
   rm /tmp/"$TELEPORT_PACKAGE"
   rm -rf /tmp/teleport
@@ -30,10 +31,14 @@ function get_user_input() {
   echo "Enter ca-pin (eg.'sha256:2154125...'): "
   read -r CA_PIN
 
-  printf "\nAre you sure these are you settings, this script will delete your existing teleport install? (y\n)\n"
+  echo ""
   echo "Node Name: $NODE_NAME"
   echo "Auth Token: $AUTH_TOKEN"
   echo "CA Pin: $CA_PIN"
+  echo ""
+  echo "This script will delete your existing teleport install?"
+  echo "Are you sure these are you settings? (y\n)"
+
   read -r RESPONSE
   if [ "$RESPONSE" = "n" ] || [ "$RESPONSE" = "N" ]; then
     exit 0
@@ -62,7 +67,7 @@ teleport:
   ca_pin: ${CA_PIN}
   auth_token: "${AUTH_TOKEN}"
   auth_servers:
-  - "teleport.mv.corplite.com:443"
+  - "${AUTH_SERVER}:443"
 auth_service:
   enabled: false
 proxy_service:
@@ -78,13 +83,14 @@ function systemd_start() {
   echo "Starting systemd teleport.service"
   sudo systemctl daemon-reload
   sudo systemctl enable teleport
+  sudo systemctl stop teleport
   sudo systemctl start teleport
 }
 
 function get_teleport_status() {
   echo "Checking teleport status"
   sleep 5
-  sudo systemctl status teleport | cat
+  sudo journalctl -u teleport | tail -n 100
 }
 
 
@@ -95,4 +101,4 @@ get_user_input
 install_teleport
 create_teleport_config
 systemd_start
-get_teleport_status
+# get_teleport_status
