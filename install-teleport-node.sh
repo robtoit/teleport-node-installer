@@ -100,4 +100,4 @@ get_user_input
 install_teleport
 create_teleport_config
 systemd_start
-# get_teleport_status
+get_teleport_status
