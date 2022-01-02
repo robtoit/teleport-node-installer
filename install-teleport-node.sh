@@ -75,7 +75,7 @@ proxy_service:
 ssh_service:
   enabled: true
   labels:
-    env: monkeyvision-prod
+    env: robto
 EOL
 }
 
