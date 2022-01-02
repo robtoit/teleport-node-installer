@@ -1,6 +1,6 @@
 #!/bin/bash
-TELEPORT_PACKAGE=teleport-v6.0.3-linux-arm-bin.tar.gz
-AUTH_SERVER=teleport.mv.corplite.com
+TELEPORT_PACKAGE=teleport-v8.0.7-linux-arm-bin.tar.gz
+AUTH_SERVER=tele.robto.it
 
 function check_root_user() {
   if [ "$EUID" -ne 0 ]; then
